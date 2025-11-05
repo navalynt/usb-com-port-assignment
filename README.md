@@ -62,8 +62,8 @@ This PowerShell solution ensures USB devices with COM ports consistently connect
        -Settings $settings
    ```
 
-3. **Whitelist devices in Horizon DEM Computer Policy**
-   - Computer Environemtn → Horizon Smart Policies → USB Device Policy (create if doesn't exist)
+3. **Whitelist devices in Horizon DEM Computer Policy Management Console**
+   - Computer Environment → Horizon Smart Policies → USB Device Policy (create if doesn't exist)
    - Exclude all devices should be ENABLED for security reasons
    - Add the below devices to "Include VID/PID device" line, semi-colon separated
       - Add Topaz: `VID-0403_PID-6001`
