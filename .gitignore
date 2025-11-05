@@ -1,0 +1,40 @@
+# PowerShell
+*.ps1xml
+*.psd1
+*.psm1.bak
+
+# Logs
+*.log
+*.log.*
+C:/Temp/*.log
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Test files
+test_*.ps1
+*_test.ps1
+
+# Local environment
+.env
+.env.local
+local/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
