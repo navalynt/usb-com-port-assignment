@@ -35,7 +35,7 @@ This PowerShell solution ensures USB devices with COM ports consistently connect
 1. **Download the script:**
    ```powershell
    # Download to your gold image
-   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/YOUR-USERNAME/YOUR-REPO/main/scripts/Set-USBCOMPortAssignment.ps1" `
+   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/navalynt/usb-com-port-assignment/main/scripts/Set-USBCOMPortAssignment.ps1" `
        -OutFile "C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
    ```
 
@@ -187,10 +187,10 @@ See [Technical Documentation](docs/USB-COM-Port-Assignment-Documentation.md#addi
 
 ```powershell
 # Check USB redirection
-Get-Service "VMwareUSBArbitrationService"
+Get-Service "VMUSBArbService"
 
 # Check Horizon logs
-Get-Content "C:\ProgramData\VMware\VDM\logs\vmware-usbarbitrator.log" -Tail 50
+Get-Content "C:\ProgramData\Omnissa\Horizon\logs\vmware-usbarbitrator.log" -Tail 50
 
 # Run diagnostic tool
 C:\Imaging\Scripts\Debug-USBCOMDevices.ps1
