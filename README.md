@@ -42,7 +42,7 @@ This PowerShell solution ensures USB devices with COM ports consistently connect
 2. **Create scheduled task** (runs as SYSTEM at user logon):
    ```powershell
    $action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
-       -Argument "-ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -File C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
+       -Argument "-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -File C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
    
    $trigger = New-ScheduledTaskTrigger -AtLogOn
    
