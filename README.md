@@ -62,10 +62,16 @@ This PowerShell solution ensures USB devices with COM ports consistently connect
        -Settings $settings
    ```
 
-3. **Whitelist devices in Horizon Administrator:**
-   - Settings → USB → USB Device Policy
-   - Add Topaz: VID `0x0403`, PID `0x6001`
-   - Add Ingenico: VID `0x0B00`, PID `0x0084`
+3. **Whitelist devices in Horizon DEM Computer Policy**
+   - Computer Environemtn → Horizon Smart Policies → USB Device Policy (create if doesn't exist)
+   - Exclude all devices should be ENABLED for security reasons
+   - Add the below devices to "Include VID/PID device" line, semi-colon separated
+      - Add Topaz: `VID-0403_PID-6001`
+      - Add Ingenico: `VID-0B00_PID-0084`
+      - Ex: `o:VID-0403_PID-6001;VID-0B00_PID-0084`
+         - "o" overrides any settings on the client and is therefore prefered
+   
+   https://docs.omnissa.com/bundle/Horizon-Remote-Desktop-FeaturesVmulti/page/ConfiguringFilterPolicySettingsforUSBDevices.html
 
 4. **Deploy to desktop pools**
 
