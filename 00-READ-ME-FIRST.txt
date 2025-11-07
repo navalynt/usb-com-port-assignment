@@ -1,0 +1,140 @@
+================================================================================
+USB COM PORT ASSIGNMENT - VERSION 1.9 GITHUB UPLOAD PACKAGE
+================================================================================
+
+Package Date: November 6, 2025
+Version: 1.9.0
+Priority: CRITICAL UPDATE
+
+================================================================================
+WHAT'S IN THIS PACKAGE
+================================================================================
+
+This package contains the corrected and working Version 1.9 from our last
+conversation, ready to upload to your GitHub repository.
+
+📜 SCRIPTS (3 files - upload to /scripts folder):
+   1. Set-USBCOMPortAssignment-v1.9.ps1
+      └─> Rename to "Set-USBCOMPortAssignment.ps1" when uploading
+   2. Install-COMPortAssignmentTask.ps1 (NEW)
+   3. Start-COMPortAssignment-DEM.ps1
+
+📖 DOCUMENTATION (1 file - upload to /docs folder):
+   4. VERSION-1.9-UPDATE.md (NEW)
+
+📋 ROOT FILES (2 files - upload to repository root):
+   5. README.md (UPDATED)
+   6. CHANGELOG.md (UPDATED)
+
+📘 GUIDES (2 files - for your reference only, do not upload):
+   7. GITHUB-UPLOAD-GUIDE.md - Complete upload instructions
+   8. This file (00-READ-ME-FIRST.txt)
+
+================================================================================
+CRITICAL FIXES IN VERSION 1.9
+================================================================================
+
+✅ FIX #1: COM Settings Now Show in Device Manager
+   - Problem: Device Manager showed 9600 baud instead of 19200
+   - Solution: Dual registry writes (Device Parameters + Windows Ports)
+   - Result: Device Manager now displays correct settings
+
+✅ FIX #2: COM Settings Persist Through Device Restarts
+   - Problem: Driver overwrote settings during initialization
+   - Solution: Intelligent timing - restart FIRST, then apply settings
+   - Result: Settings survive device restarts
+
+✅ NEW: Automated Scheduled Task Installer
+   - Priority 3 (as you requested)
+   - Minimized window (not hidden)
+   - SYSTEM account
+   - Simplified deployment
+
+================================================================================
+QUICK START - UPLOAD TO GITHUB
+================================================================================
+
+1. Go to: https://github.com/navalynt/usb-com-port-assignment
+
+2. Upload Scripts:
+   - Navigate to /scripts folder
+   - Upload the 3 script files
+   - IMPORTANT: Rename Set-USBCOMPortAssignment-v1.9.ps1
+                    to Set-USBCOMPortAssignment.ps1
+
+3. Upload Documentation:
+   - Navigate to /docs folder
+   - Upload VERSION-1.9-UPDATE.md
+
+4. Update Root Files:
+   - Go back to repository root
+   - Upload README.md and CHANGELOG.md (will overwrite existing)
+
+5. Done! Your repository is now updated to v1.9
+
+For detailed step-by-step instructions, see: GITHUB-UPLOAD-GUIDE.md
+
+================================================================================
+VERIFICATION
+================================================================================
+
+After uploading, verify:
+
+✓ Main script shows "Version : 1.9" in the header
+✓ README.md mentions "Version 1.9" and "CRITICAL FIXES"
+✓ CHANGELOG.md shows "[1.9.0] - 2025-11-06" at the top
+✓ VERSION-1.9-UPDATE.md exists in /docs folder
+✓ Install-COMPortAssignmentTask.ps1 exists in /scripts folder
+
+================================================================================
+WHAT WORKS NOW
+================================================================================
+
+✅ COM port assignments work correctly
+✅ COM settings persist after device restarts
+✅ Device Manager shows correct baud rate, parity, etc.
+✅ Dual registry writes ensure persistence
+✅ Intelligent timing prevents driver overwrites
+✅ Scheduled task installer automates deployment
+✅ All scripts are UTF-8 compliant
+✅ All scripts are PowerShell 5.0 compatible
+✅ Original self-contained design with $DeviceConfig array
+✅ No parameters required to run the script
+
+================================================================================
+BACKWARD COMPATIBILITY
+================================================================================
+
+100% Compatible with v1.8:
+✅ No changes needed to scheduled tasks
+✅ No changes needed to DEM FlexEngine wrappers
+✅ No changes needed to device configuration
+✅ No changes needed to COM settings format
+
+================================================================================
+FILES READY FOR DOWNLOAD
+================================================================================
+
+All files are in the current folder and ready to download or upload:
+
+[View Set-USBCOMPortAssignment-v1.9.ps1]
+[View Install-COMPortAssignmentTask.ps1]
+[View Start-COMPortAssignment-DEM.ps1]
+[View VERSION-1.9-UPDATE.md]
+[View README.md]
+[View CHANGELOG.md]
+[View GITHUB-UPLOAD-GUIDE.md]
+
+================================================================================
+SUPPORT
+================================================================================
+
+Questions? Check these files:
+- GITHUB-UPLOAD-GUIDE.md - Complete upload instructions
+- VERSION-1.9-UPDATE.md - Technical details of all fixes
+- README.md - Complete project documentation
+- CHANGELOG.md - Version history
+
+================================================================================
+END OF PACKAGE SUMMARY
+================================================================================

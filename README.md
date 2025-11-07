@@ -1,19 +1,15 @@
 # USB COM Port Assignment for Omnissa Horizon VDI
 
-[![PowerShell](https://img.shields.io/badge/PowerShell-5.0%2B-blue.svg)](https://github.com/PowerShell/PowerShell)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
+Automated COM port assignment solution for USB devices in non-persistent VDI environments.
 
-> Automated COM port assignment solution for USB devices in non-persistent VDI environments.
+This PowerShell solution ensures USB devices with COM ports consistently connect to specific COM ports in Omnissa Horizon View VDI environments. Designed specifically for non-persistent desktops where devices may connect on different COM ports each session.
 
-## Overview
-
-This PowerShell solution ensures USB devices with COM ports consistently connect to specific COM ports in **Omnissa Horizon View VDI** environments. Designed specifically for non-persistent desktops where devices may connect on different COM ports each session.
-
-### Key Features
+## Features
 
 - ✅ Automatic COM port assignment based on VID/PID
 - ✅ Manufacturer-specified COM settings (baud rate, parity, flow control)
+- ✅ **NEW v1.9:** Dual registry writes for Device Manager visibility
+- ✅ **NEW v1.9:** Intelligent timing logic to prevent driver overwrites
 - ✅ Conflict resolution (moves conflicting devices automatically)
 - ✅ Device restart to apply changes
 - ✅ Friendly name updates in Device Manager
@@ -21,61 +17,72 @@ This PowerShell solution ensures USB devices with COM ports consistently connect
 - ✅ Non-persistent VDI optimized
 - ✅ PowerShell 5.0 compatible, UTF-8 compliant
 
-### Supported Devices
+## Supported Devices
 
 | Device | Target Port | VID | PID | Settings |
-|--------|-------------|-----|-----|----------|
+|--------|------------|-----|-----|----------|
 | Topaz T-LBK462-BSB-RC Signature Pad | COM5 | 0403 | 6001 | 19200 baud, Odd parity |
 | Ingenico LANE3000 Credit Card Reader | COM21 | 0B00 | 0084 | 115200 baud |
 
 ## Quick Start
 
-### Installation
+### 1. Download the script
 
-1. **Download the script:**
-   ```powershell
-   # Download to your gold image
-   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/navalynt/usb-com-port-assignment/main/scripts/Set-USBCOMPortAssignment.ps1" `
-       -OutFile "C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
-   ```
+```powershell
+# Download to your gold image
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/navalynt/usb-com-port-assignment/main/scripts/Set-USBCOMPortAssignment.ps1" `
+    -OutFile "C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
+```
 
-2. **Create scheduled task** (runs as SYSTEM at user logon):
-   ```powershell
-   $action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
-       -Argument "-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -File C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
-   
-   $trigger = New-ScheduledTaskTrigger -AtLogOn
-   
-   $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" `
-       -LogonType ServiceAccount -RunLevel Highest
-   
-   $settings = New-ScheduledTaskSettingsSet `
-       -AllowStartIfOnBatteries `
-       -DontStopIfGoingOnBatteries `
-       -StartWhenAvailable
-   
-   Register-ScheduledTask `
-       -TaskName "USB-COM-Port-Assignment" `
-       -Action $action `
-       -Trigger $trigger `
-       -Principal $principal `
-       -Settings $settings
-   ```
+### 2. Create scheduled task (runs as SYSTEM at user logon)
 
-3. **Whitelist devices in Horizon DEM Computer Policy Management Console**
-   - Computer Environment → Horizon Smart Policies → USB Device Policy (create if doesn't exist)
-   - Exclude all devices should be ENABLED for security reasons
-   - Add the below devices to "Include VID/PID device" line, semi-colon separated
-      - Add Topaz: `VID-0403_PID-6001`
-      - Add Ingenico: `VID-0B00_PID-0084`
-      - Ex: `o:VID-0403_PID-6001;VID-0B00_PID-0084`
-         - "o" overrides any settings on the client and is therefore prefered
-   
-   https://docs.omnissa.com/bundle/Horizon-Remote-Desktop-FeaturesVmulti/page/ConfiguringFilterPolicySettingsforUSBDevices.html
+```powershell
+$action = New-ScheduledTaskAction -Execute "PowerShell.exe" `
+    -Argument "-ExecutionPolicy Bypass -NoProfile -WindowStyle Minimized -File C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1"
 
-4. **Deploy to desktop pools**
+$trigger = New-ScheduledTaskTrigger -AtLogOn
 
-### Usage
+$principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" `
+    -LogonType ServiceAccount -RunLevel Highest
+
+$settings = New-ScheduledTaskSettingsSet `
+    -AllowStartIfOnBatteries `
+    -DontStopIfGoingOnBatteries `
+    -StartWhenAvailable `
+    -Priority 3
+
+Register-ScheduledTask `
+    -TaskName "USB-COM-Port-Assignment" `
+    -Action $action `
+    -Trigger $trigger `
+    -Principal $principal `
+    -Settings $settings
+```
+
+**Or use the automated installer:**
+
+```powershell
+# Download installer
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/navalynt/usb-com-port-assignment/main/scripts/Install-COMPortAssignmentTask.ps1" `
+    -OutFile "C:\Temp\Install-COMPortAssignmentTask.ps1"
+
+# Run as Administrator
+.\Install-COMPortAssignmentTask.ps1
+```
+
+### 3. Whitelist devices in Horizon DEM Computer Policy Management Console
+
+- Computer Environment → Horizon Smart Policies → USB Device Policy (create if doesn't exist)
+- **Exclude all devices** should be ENABLED for security reasons
+- Add the below devices to "Include VID/PID device" line, semi-colon separated
+  - Add Topaz: `VID-0403_PID-6001`
+  - Add Ingenico: `VID-0B00_PID-0084`
+  - Ex: `o:VID-0403_PID-6001;VID-0B00_PID-0084`
+  - **"o"** overrides any settings on the client and is therefore preferred
+
+[Omnissa Documentation - USB Device Policies](https://docs.omnissa.com/bundle/Horizon-Remote-Desktop-FeaturesVmulti/page/ConfiguringFilterPolicySettingsforUSBDevices.html)
+
+### 4. Deploy to desktop pools
 
 The script runs automatically at user logon. To run manually:
 
@@ -92,35 +99,35 @@ C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1 -ContinuousMonitoring
 
 ## Documentation
 
-### 📚 Complete Documentation
+- [Technical Documentation](docs/USB-COM-Port-Assignment-Documentation.md) - Complete technical details
+- [COM Settings Reference](docs/COM-Settings-Quick-Reference.md) - All COM parameters explained
+- [Deployment Guide](docs/USB-COM-Deployment-Guide.md) - Step-by-step deployment
+- [**Version 1.9 Update**](docs/VERSION-1.9-UPDATE.md) - **CRITICAL fix details - READ THIS FIRST**
 
-- **[Technical Documentation](docs/USB-COM-Port-Assignment-Documentation.md)** - Complete technical details
-- **[COM Settings Reference](docs/COM-Settings-Quick-Reference.md)** - All COM parameters explained
-- **[Deployment Guide](docs/USB-COM-Deployment-Guide.md)** - Step-by-step deployment
-- **[Version 1.8 Update](docs/VERSION-1.8-UPDATE.md)** - Critical fix details
+## What's New in Version 1.9
 
-### Quick Links
+### CRITICAL FIXES
 
-- [Adding New Devices](#adding-new-devices)
-- [Troubleshooting](#troubleshooting)
-- [COM Settings Format](#com-settings-format)
-- [Version History](#version-history)
+**Issue #1: COM Settings Not Visible in Device Manager** ✅ FIXED
+- Device Manager now correctly displays configured COM settings
+- Dual registry write implementation ensures persistence
+
+**Issue #2: Driver Overwriting Settings on Restart** ✅ FIXED
+- Intelligent timing logic prevents driver from overwriting settings
+- Correct sequence: Port change → Restart → Wait for driver → Apply settings
+
+See [VERSION-1.9-UPDATE.md](docs/VERSION-1.9-UPDATE.md) for complete details and upgrade instructions.
 
 ## Requirements
 
-### System Requirements
 - Windows 10/11 (64-bit) or Windows Server 2016/2019/2022+
 - PowerShell 5.0 or higher
 - Administrator/SYSTEM privileges
-
-### VDI Requirements
 - Omnissa Horizon View 2506 (or compatible version)
 - USB redirection enabled
 - Devices whitelisted in Horizon Administrator
 
 ## Configuration
-
-### Device Configuration
 
 Devices are configured in the `$DeviceConfig` array at the top of the script:
 
@@ -131,23 +138,21 @@ $DeviceConfig = @(
         VendorID = "0403"
         ProductID = "6001"
         TargetCOMPort = "COM5"
-        COMSettings = "19200,8,1,0,0,1,14,14"  # Manufacturer specifications
+        COMSettings = "19200,8,1,0,0,1,14,14" # Manufacturer specifications
     },
     @{
         Name = "Ingenico LANE3000"
         VendorID = "0B00"
         ProductID = "0084"
         TargetCOMPort = "COM21"
-        COMSettings = "115200,8,0,0,0,1,14,14"  # Manufacturer specifications
+        COMSettings = "115200,8,0,0,0,1,14,14" # Manufacturer specifications
     }
 )
 ```
 
 ### COM Settings Format
 
-```
-"BaudRate,DataBits,Parity,StopBits,FlowControl,UseFIFO,RxBuffer,TxBuffer"
-```
+`"BaudRate,DataBits,Parity,StopBits,FlowControl,UseFIFO,RxBuffer,TxBuffer"`
 
 | Position | Parameter | Values | Description |
 |----------|-----------|--------|-------------|
@@ -166,8 +171,7 @@ Use `"default"` to skip custom settings and use Windows defaults.
 
 1. **Find the device VID/PID:**
    ```powershell
-   Get-CimInstance Win32_PnPEntity | Where-Object {$_.Name -match 'COM'} | 
-       Select-Object Name, DeviceID
+   Get-CimInstance Win32_PnPEntity | Where-Object {$_.Name -match 'COM'} | Select-Object Name, DeviceID
    ```
 
 2. **Add to the configuration:**
@@ -189,7 +193,7 @@ See [Technical Documentation](docs/USB-COM-Port-Assignment-Documentation.md#addi
 
 ## Troubleshooting
 
-### Device Not Found
+### Check USB Redirection
 
 ```powershell
 # Check USB redirection
@@ -197,17 +201,21 @@ Get-Service "VMUSBArbService"
 
 # Check Horizon logs
 Get-Content "C:\ProgramData\Omnissa\Horizon\logs\vmware-usbarbitrator.log" -Tail 50
-
-# Run diagnostic tool
-C:\Imaging\Scripts\Debug-USBCOMDevices.ps1
 ```
 
-### Wrong COM Port
+### Run Diagnostic Tool
 
 ```powershell
+# Run diagnostic tool
+C:\Imaging\Scripts\Debug-USBCOMDevices.ps1
+
 # Check current assignments
 Get-CimInstance Win32_PnPEntity | Where-Object {$_.Name -match 'COM'}
+```
 
+### Manual Test Run
+
+```powershell
 # Run script manually
 C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1
 
@@ -215,7 +223,7 @@ C:\Imaging\Scripts\Set-USBCOMPortAssignment.ps1
 Get-Content "C:\Temp\USBCOMPortAssignment_$(Get-Date -Format 'yyyyMMdd').log"
 ```
 
-### COM Settings Not Applied
+### Verify COM Settings
 
 ```powershell
 # Check registry (for Topaz)
@@ -225,25 +233,30 @@ Get-ChildItem $regPath | ForEach-Object {
 }
 
 # Should show: BaudRate: 19200, RxFIFO: 14, TxFIFO: 14
+
+# Check Windows Ports registry (for Device Manager visibility)
+Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Ports" -Name "COM5:"
+
+# Should show: COM5: = 19200,o,8,1
 ```
 
 See [Technical Documentation](docs/USB-COM-Port-Assignment-Documentation.md#troubleshooting) for more.
 
 ## Scripts
 
-### Main Scripts
+- [Set-USBCOMPortAssignment.ps1](scripts/Set-USBCOMPortAssignment.ps1) (v1.9) - Main script for COM port management
+- [Install-COMPortAssignmentTask.ps1](scripts/Install-COMPortAssignmentTask.ps1) (v1.1) - Automated scheduled task installer
+- [Start-COMPortAssignment-DEM.ps1](scripts/Start-COMPortAssignment-DEM.ps1) (v1.0) - DEM FlexEngine wrapper
+- [Debug-USBCOMDevices.ps1](scripts/Debug-USBCOMDevices.ps1) (v1.0) - Diagnostic and troubleshooting tool
 
-- **[Set-USBCOMPortAssignment.ps1](scripts/Set-USBCOMPortAssignment.ps1)** (v1.8) - Main script for COM port management
-- **[Debug-USBCOMDevices.ps1](scripts/Debug-USBCOMDevices.ps1)** (v1.0) - Diagnostic and troubleshooting tool
-
-### Script Features
+### Main Script Functions
 
 **Set-USBCOMPortAssignment.ps1:**
 - Waits for USB devices to initialize
 - Assigns devices to target COM ports
-- Applies manufacturer-specified COM settings
+- Applies manufacturer-specified COM settings with dual registry writes
 - Resolves COM port conflicts
-- Restarts devices to apply changes
+- Restarts devices to apply changes (with intelligent timing)
 - Updates friendly names in Device Manager
 - Comprehensive logging
 
@@ -254,7 +267,7 @@ See [Technical Documentation](docs/USB-COM-Port-Assignment-Documentation.md#trou
 - Identifies problems
 - Generates detailed diagnostic report
 
-## Logs
+## Logging
 
 Logs are written to `C:\Temp\USBCOMPortAssignment_YYYYMMDD.log`
 
@@ -273,9 +286,10 @@ Get-Content "C:\Temp\USBCOMPortAssignment_*.log" | Select-String "\[ERROR\]"
 | 1.0 | Oct 2025 | Initial release |
 | 1.6 | Nov 2025 | Added configurable COM settings |
 | 1.7 | Nov 4, 2025 | Updated to manufacturer specifications |
-| **1.8** | **Nov 4, 2025** | **Fixed registry path resolution (CRITICAL)** |
+| 1.8 | Nov 4, 2025 | Fixed registry path resolution (CRITICAL) |
+| **1.9** | **Nov 6, 2025** | **Dual registry writes + timing fixes (CRITICAL)** |
 
-See [VERSION-1.8-UPDATE.md](docs/VERSION-1.8-UPDATE.md) for details on the latest fix.
+See [VERSION-1.9-UPDATE.md](docs/VERSION-1.9-UPDATE.md) for details on the latest critical fixes.
 
 ## Contributing
 
@@ -286,8 +300,6 @@ Contributions are welcome! Please:
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-### Reporting Issues
 
 When reporting issues, please include:
 - Script version
@@ -303,7 +315,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built for **Omnissa Horizon View 2506** environments
+- Built for Omnissa Horizon View 2506 environments
 - Designed for non-persistent VDI with FSLogix, App Volumes, and DEM
 - COM settings based on manufacturer specifications:
   - [Topaz Systems](https://www.topazsystems.com) - T-LBK462-BSB-RC specifications
@@ -311,17 +323,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- **Documentation:** See [docs](docs/) folder
-- **Issues:** [GitHub Issues](https://github.com/YOUR-USERNAME/YOUR-REPO/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/YOUR-USERNAME/YOUR-REPO/discussions)
-
-## Related Projects
-
-- [Omnissa Horizon View Documentation](https://docs.omnissa.com/)
-- [PowerShell Gallery](https://www.powershellgallery.com/)
+- **Documentation:** See [docs](docs) folder
+- **Issues:** [GitHub Issues](https://github.com/navalynt/usb-com-port-assignment/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/navalynt/usb-com-port-assignment/discussions)
 
 ---
 
 **Made with ❤️ for VDI Administrators**
 
-**Current Version:** 1.8 | **PowerShell:** 5.0+ | **Platform:** Windows 10/11, Server 2016+
+**Current Version:** 1.9 | **PowerShell:** 5.0+ | **Platform:** Windows 10/11, Server 2016+
